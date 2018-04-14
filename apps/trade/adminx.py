@@ -5,7 +5,7 @@ import xadmin
 from .models import ShoppingCart, OrderInfo, OrderGoods
 
 class ShoppingCartAdmin(object):
-    list_display = ["user", "goods", "nums", ]
+    list_display = ["user", "goods", "goods_num", ]
 
 
 class OrderInfoAdmin(object):
