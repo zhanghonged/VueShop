@@ -1,8 +1,4 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import mixins
-from rest_framework import generics
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -14,9 +10,9 @@ from .serializers import GoodsSerializer, CategorySerializer
 from .filters import GoodsFilter
 # Create your views here.
 class GoodstPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 12
     page_size_query_param = 'page_size'
-    page_query_param = 'p'
+    page_query_param = 'page'
     max_page_size = 100
 
 class GoodsListViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -31,8 +27,8 @@ class GoodsListViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     filter_backends = (DjangoFilterBackend,filters.SearchFilter,filters.OrderingFilter,)
     filter_class = GoodsFilter
-    search_fields = ('=name', 'goods_brief','goods_desc')
-    ordering_fields = ('name','sold_num', 'add_time')
+    search_fields = ('name', 'goods_brief','goods_desc')
+    ordering_fields = ('sold_num', 'shop_price')
 
 class CategoryViewset(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
