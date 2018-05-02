@@ -4,6 +4,7 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
 from .models import Goods, GoodsCategory
 from .serializers import GoodsSerializer, CategorySerializer
@@ -23,11 +24,11 @@ class GoodsListViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = GoodsSerializer
 
     pagination_class = GoodstPagination
-
+    #authentication_classes = (TokenAuthentication, )
 
     filter_backends = (DjangoFilterBackend,filters.SearchFilter,filters.OrderingFilter,)
     filter_class = GoodsFilter
-    search_fields = ('name', 'goods_brief','goods_desc')
+    search_fields = ('=name', 'goods_brief','goods_desc')
     ordering_fields = ('sold_num', 'shop_price')
 
 class CategoryViewset(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
