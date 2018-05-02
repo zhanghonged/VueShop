@@ -9,8 +9,8 @@ class GoodsFilter(filters.FilterSet):
     """
     商品的过滤类
     """
-    pricemin = filters.NumberFilter(name='shop_price',lookup_expr='gt')
-    pricemax = filters.NumberFilter(name='shop_price',lookup_expr='lt')
+    price_min = filters.NumberFilter(name='shop_price',lookup_expr='gt')
+    price_max = filters.NumberFilter(name='shop_price',lookup_expr='lt')
     top_category = filters.NumberFilter(method='top_category_filter')
 
     def top_category_filter(self, queryset, name, value):
