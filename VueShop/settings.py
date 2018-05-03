@@ -41,12 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
-    'DjangoUeditor',
-    'goods.apps.GoodsConfig',
-    'trade.apps.TradeConfig',
-    'user_operation.apps.UserOperationConfig',
+    'extra_apps.DjangoUeditor',
+    'apps.goods.apps.GoodsConfig',
+    'apps.trade.apps.TradeConfig',
+    'apps.user_operation.apps.UserOperationConfig',
     'crispy_forms',
-    'xadmin',
+    'extra_apps.xadmin',
     'rest_framework',
     'django_filters',
     'corsheaders',
@@ -166,3 +166,9 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
 }
+
+# 手机号码正则
+REGEX_MOBILE = "^1[358]\d{9}|^147\d{8}|&176\d{8}$"
+
+# 云片网设置
+APIKEY = "d6c4ddbf50ab36611d2f52041a0b949e"
