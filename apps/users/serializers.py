@@ -47,14 +47,14 @@ class UserRegSerializer(serializers.ModelSerializer):
         style={'input_type':'password'}, label="密码", write_only=True
     )
 
-    # def create(self, validated_data):
-    #     """
-    #     重载create函数，使密码入库加密
-    #     """
-    #     user = super(UserRegSerializer,self).create(validated_data=validated_data)
-    #     user.set_password(validated_data["password"])
-    #     user.save()
-    #     return user
+    def create(self, validated_data):
+        """
+        重载create函数，使密码入库加密
+        """
+        user = super(UserRegSerializer,self).create(validated_data=validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
 
     def validated_code(self, code):
         # 验证码是否存在
