@@ -18,6 +18,8 @@ class UserFav(models.Model):
     class Meta:
         verbose_name = "用户收藏"
         verbose_name_plural = verbose_name
+        # 设置下面两个字段联合唯一
+        unique_together = ("user", "goods")
 
     def __str__(self):
         return self.user.name
