@@ -12,7 +12,7 @@ class UserFav(models.Model):
     用户收藏
     """
     user = models.ForeignKey(User, verbose_name="用户")
-    goods = models.ForeignKey(Goods, verbose_name="商品")
+    goods = models.ForeignKey(Goods, verbose_name="商品", help_text="商品ID")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:

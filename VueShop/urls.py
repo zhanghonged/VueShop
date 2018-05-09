@@ -51,6 +51,6 @@ urlpatterns = [
     #jwt的认证接口
     url(r'^login/', obtain_jwt_token),
 
-
-    url(r'docs/', include_docs_urls(title="生鲜"))
+    # 匹配后面一定不能加"$"符号
+    url(r'docs/', include_docs_urls(title="API文档"))
 ]

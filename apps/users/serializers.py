@@ -31,20 +31,32 @@ class SmsSerializer(serializers.Serializer):
 
         return mobile
 
+class UserDetailSerializer(serializers.ModelSerializer):
+    """
+    用户详情序列化类
+    """
+
+    class Meta:
+        model = User
+        fields = ("name","gender","birthday","email","mobile")
+
 class UserRegSerializer(serializers.ModelSerializer):
     # write_only=True 序列化得时候就不用序列号这个字段了，返回也没有这个字段了
     code = serializers.CharField(required=True, write_only=True, max_length=4, min_length=4,label="验证码",
                                  error_messages= {
                                      "blank":"请输入验证码",
                                      "max_length":"验证码格式错误",
-                                     "min_length": "验证码格式错误",
-                                 })
+                                     "min_length": "验证码格式错误"
+                                 },
+                                 help_text="验证码"
+                                 )
 
     username = serializers.CharField(required=True, allow_blank=False, label="用户名",
-                                     validators=[UniqueValidator(queryset=User.objects.all(),message="用户已存在")]
+                                     validators=[UniqueValidator(queryset=User.objects.all(),message="用户已存在")],
+                                     help_text="用户名"
                                      )
     password = serializers.CharField(
-        style={'input_type':'password'}, label="密码", write_only=True
+        style={'input_type':'password'}, label="密码", write_only=True, help_text="密码"
     )
 
     def create(self, validated_data):
