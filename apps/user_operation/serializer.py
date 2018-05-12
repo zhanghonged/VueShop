@@ -1,7 +1,22 @@
+import re
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from .models import UserFav, UserLeavingMessage, UserAddress
+from goods.models import Goods
+from VueShop.settings import REGEX_MOBILE
+
+class GoodsBriefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goods
+        fields = ("id","name","category")
+
+class UserFavDetailSerializer(serializers.ModelSerializer):
+    goods = GoodsBriefSerializer()
+    class Meta:
+        model = UserFav
+        fields = ("goods", "id")
+
 
 class UserFavSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -19,7 +34,7 @@ class UserFavSerializer(serializers.ModelSerializer):
 
 class LeavingMessageSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    add_time = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M")
+    add_time = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M:%S")
 
     class Meta:
         model = UserLeavingMessage
@@ -28,6 +43,13 @@ class LeavingMessageSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     add_time = serializers.DateTimeField(read_only=True, format="%Y-%m-%d %H:%M")
+    signer_mobile = serializers.CharField(max_length=11)
+
+    #验证手机号码是否合法
+    def validate_signer_mobile(self,signer_mobile):
+        if not re.match(REGEX_MOBILE,signer_mobile):
+            raise serializers.ValidationError("手机号码不规范")
+        return signer_mobile
 
     class Meta:
         model = UserAddress

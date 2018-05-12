@@ -7,18 +7,29 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.authentication import SessionAuthentication
 
 from .models import UserFav, UserLeavingMessage, UserAddress
-from .serializer import UserFavSerializer, LeavingMessageSerializer, AddressSerializer
+from .serializer import UserFavSerializer, UserFavDetailSerializer, LeavingMessageSerializer, AddressSerializer
 from utils.permissions import IsOwnerOrReadOnly
 # Create your views here.
 
 class UserFavViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     """
-    用户收藏
+    list:
+        获取用户收藏列表
+    retrieve:
+        判断某个商品是否已收藏
+    create:
+        收藏商品
     """
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
-    serializer_class = UserFavSerializer
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
     lookup_field = "goods_id"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return UserFavDetailSerializer
+        elif self.action == "create":
+            return UserFavSerializer
+        return UserFavSerializer
 
     def get_queryset(self):
         return UserFav.objects.filter(user=self.request.user)
@@ -53,6 +64,8 @@ class AddressViewset(viewsets.ModelViewSet):
         更新收货地址
     delete:
         删除收货地址
+    retrieve:
+        收货地址详细
     """
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
