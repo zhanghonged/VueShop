@@ -50,7 +50,7 @@ class OrderViewset(mixins.ListModelMixin,
     """
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
-    serializer_class = OrderSerializer
+    # serializer_class = OrderSerializer
 
     def get_queryset(self):
         return OrderInfo.objects.filter(user=self.request.user)
@@ -61,14 +61,22 @@ class OrderViewset(mixins.ListModelMixin,
         return OrderSerializer
 
     def perform_create(self, serializer):
-        order = serializer.save()
         shop_carts = ShoppingCart.objects.filter(user=self.request.user)
+
+        #根据购物车的商品计算订单价格
+        order_mount = 0
+        for shop_cart in shop_carts:
+            order_mount += shop_cart.goods.shop_price*shop_cart.nums
+        serializer.validated_data["order_mount"] = order_mount
+        order = serializer.save()
+        #添加订单商品表添加数据，并清空购物车
         for shop_cart in shop_carts:
             order_goods = OrderGoods()
             order_goods.goods = shop_cart.goods
             order_goods.goods_num = shop_cart.nums
             order_goods.order = order
             order_goods.save()
+
             shop_cart.delete()
         return order
 

@@ -19,6 +19,7 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = "购物车"
         verbose_name_plural = verbose_name
+        unique_together = ("user","goods")
 
     def __str__(self):
         return "%s(%d)".format(self.goods.name, self.nums)
@@ -36,7 +37,7 @@ class OrderInfo(models.Model):
     user = models.ForeignKey(User, verbose_name="用户")
     order_sn = models.CharField(max_length=30, null=True, blank=True, unique=True, verbose_name="订单号")
     trade_no = models.CharField(max_length=100, unique=True, null=True, blank=True, verbose_name="交易号")
-    pay_status = models.CharField(choices=ORDER_STATUS, max_length=10, verbose_name="订单状态")
+    pay_status = models.CharField(choices=ORDER_STATUS, default="paying", max_length=10, verbose_name="订单状态")
     post_script = models.CharField(max_length=200, verbose_name="订单留言")
     order_mount = models.FloatField(default=0.0, verbose_name="订单金额")
     pay_time = models.DateTimeField(null=True, blank=True, verbose_name="支付时间")

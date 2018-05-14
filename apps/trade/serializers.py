@@ -60,11 +60,13 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    #下面这些字段用户不能提交，因此设置 read_only=True
     order_sn = serializers.CharField(read_only=True)
     trade_no = serializers.CharField(read_only=True)
     pay_status = serializers.CharField(read_only=True)
     pay_time = serializers.DateTimeField(read_only=True)
+    order_mount = serializers.FloatField(read_only=True)
 
     def generate_order_sn(self):
         # 当前时间+userid+随机数
@@ -77,6 +79,7 @@ class OrderSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         attrs["order_sn"] = self.generate_order_sn()
         return attrs
+
 
     class Meta:
         model = OrderInfo
