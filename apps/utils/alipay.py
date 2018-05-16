@@ -119,13 +119,6 @@ class AliPay(object):
 
 
 if __name__ == "__main__":
-    return_url = 'https://openapi.alipaydev.com/gateway.do?app_id=2016091500517899&biz_content=%7B%22subject%22%3A%22%5Cu56fd%5Cu9645%5Cu7c73%5Cu5170%5Cu6b63%5Cu7248%5Cu79cb%5Cu8863%22%2C%22out_trade_no%22%3A%22201702022223%22%2C%22total_amount%22%3A1%2C%22product_code%22%3A%22FAST_INSTANT_TRADE_PAY%22%7D&charset=utf-8&method=alipay.trade.page.pay&notify_url=http%3A%2F%2Fprojectsedus.com%2F&return_url=http%3A%2F%2F47.92.87.172%3A8000%2F&sign_type=RSA2&timestamp=2018-05-16+00%3A04%3A24&version=1.0&sign=Tw6wxOd%2FTUGHAmznD5XC%2BY2TeaQONgEvoI9GMejliC5%2F1qzZRun7ut1rKI9sWK5IzFW%2FMuLx7hOCBDF8GFSDG3rEd5EQKEhTs3x9OSEbqnes%2BeWvDfIKYewUpG25H9FcIe%2BZzt7WNkPeuD4WUymh8MfjV3V89Dm7eH3z9EJEvgFaIKf%2FmCODoVS1gj5mw0s4rubuorkdMVeLQNddl%2BSYuYhmG2grXud4v3t31ZWp6RdrsHIBLUYGQIqaUPcUH50opsmrWXwftuH8LqBzK8jiTUikhQPsOpudaUmJ6sl0mHdB2SB%2BuzUsI%2FKIz3Dc5ZnbOOpLnpHi6BX4hgX32a3WOQ%3D%3D'
-    o = urlparse(return_url)
-    query = parse_qs(o.query)
-    processed_query = {}
-    ali_sign = query.pop("sign")[0]
-
-
     alipay = AliPay(
         appid="2016091500517899",
         app_notify_url="http://projectsedus.com/",
@@ -135,15 +128,23 @@ if __name__ == "__main__":
         return_url="http://47.92.87.172:8000/"
     )
 
+    # 测试支付接口
+    url = alipay.direct_pay(
+        subject="国际米兰正版秋衣",
+        out_trade_no="201802022224",
+        total_amount=1
+    )
+    re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
+    print(re_url)
 
-    for key, value in query.items():
-        processed_query[key] = value[0]
-    print (alipay.verify(processed_query, ali_sign))
 
-    # url = alipay.direct_pay(
-    #     subject="国际米兰正版秋衣",
-    #     out_trade_no="201702022223",
-    #     total_amount=1
-    # )
-    # re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
-    # print(re_url)
+    # 测试支付宝回调是否正确
+    # return_url = 'http://47.92.87.172:8000/?total_amount=1.00&timestamp=2018-05-16+14%3A09%3A33&sign=qvTxf5Z2fbJALA6AXGmaxhNeuxZ6P5%2Fi8TUFqLPuOpl795JiWqQO1AlkEUDGwTfXvhzRkG8dPj4N5msNjK3R%2BHb36ml%2Bn4JfhdwlBRSlOjb0KOiVCwDDk279Qoz4nUtKqrdAQ71KxQHJioGC5lES%2FFGecJYR2EFD5pWYekEemxITKo36z3HrFlSYjSjDYqyhpTaFOiU8XaLAibVgamapJrkz%2BrmJuIT7ef6wucPunk6ZjK%2FsAOMu14HwYcWNvYJtsfaEW6hf%2BcYy69QCLXFAi%2FGTO4xHC4waT%2F5t95z4%2Fku%2FeGO3UMTSY8ga3Pk2J70Rv0NktbtJkZTW2tbjY2Em%2FQ%3D%3D&trade_no=2018051621001004160200295714&sign_type=RSA2&auth_app_id=2016091500517899&charset=utf-8&seller_id=2088102175758080&method=alipay.trade.page.pay.return&app_id=2016091500517899&out_trade_no=201802022224&version=1.0'
+    # o = urlparse(return_url)
+    # query = parse_qs(o.query)
+    # processed_query = {}
+    # ali_sign = query.pop("sign")[0]
+    #
+    # for key, value in query.items():
+    #     processed_query[key] = value[0]
+    # print (alipay.verify(processed_query, ali_sign))
