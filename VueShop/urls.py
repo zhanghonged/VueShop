@@ -15,6 +15,7 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.conf.urls import include, url
+from django.views.generic import TemplateView
 import xadmin
 from VueShop.settings import MEDIA_ROOT
 from django.views.static import serve
@@ -26,7 +27,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from goods.views import GoodsListViewset, CategoryViewset
 from users.views import SmsCodeViewset, UserViewset
 from user_operation.views import UserFavViewset, LeavingMessageViewset, AddressViewset
-from trade.views import ShoppingCartViewset, OrderViewset
+from trade.views import ShoppingCartViewset, OrderViewset, AliPayView
 
 
 router = DefaultRouter()
@@ -59,6 +60,9 @@ urlpatterns = [
     #jwt的认证接口
     url(r'^login/', obtain_jwt_token),
 
+    url(r'^alipay/return',AliPayView.as_view(), name="alipay"),
     # 匹配后面一定不能加"$"符号
-    url(r'docs/', include_docs_urls(title="API文档"))
+    url(r'docs/', include_docs_urls(title="API文档")),
+
+    url(r'^index/', TemplateView.as_view(template_name="index.html"), name="index"),
 ]
