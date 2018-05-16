@@ -125,13 +125,13 @@ if __name__ == "__main__":
         app_private_key_path="../trade/keys/private_key_2048.txt",
         alipay_public_key_path="../trade/keys/alipay_public_key.txt",  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
         debug=True,  # 默认False,
-        return_url="http://47.92.87.172:8000/"
+        return_url=None
     )
 
     # 测试支付接口
     url = alipay.direct_pay(
-        subject="国际米兰正版秋衣",
-        out_trade_no="201802022224",
+        subject="国际米兰正版秋裤",
+        out_trade_no="201802022225",
         total_amount=1
     )
     re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)

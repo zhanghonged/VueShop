@@ -29,11 +29,12 @@ class OrderInfo(models.Model):
     订单
     """
     ORDER_STATUS = (
-        ("success","成功"),
-        ("cencel", "取消"),
-        ("paying", "待支付")
+        ("TRADE_SUCCESS", "成功"),
+        ("TRADE_CLOSED", "超时关闭"),
+        ("WAIT_BUYER_PAY", "交易创建"),
+        ("TRADE_FINISHED", "交易结束"),
+        ("paying", "待支付"),
     )
-
     user = models.ForeignKey(User, verbose_name="用户")
     order_sn = models.CharField(max_length=30, null=True, blank=True, unique=True, verbose_name="订单号")
     trade_no = models.CharField(max_length=100, unique=True, null=True, blank=True, verbose_name="交易号")
