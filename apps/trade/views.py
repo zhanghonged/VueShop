@@ -40,6 +40,37 @@ class ShoppingCartViewset(viewsets.ModelViewSet):
         return ShoppingCart.objects.filter(user=self.request.user)
 
 
+    # 重载 CreateModelMixin 的 perform_create 方法，实现增加购物车后商品库存数减少
+    # 添加商品到购物车，商品库存数减少
+    def perform_create(self, serializer):
+        shop_cart = serializer.save()
+        goods = shop_cart.goods
+        goods.goods_num -= shop_cart.nums
+        goods.save()
+
+    # 重载 DestroyModelMixin 的 perform_destroy 的方法，实现删除购物车，商品库存数增加
+    # 删除购物车商品，商品库存数增加
+    def perform_destroy(self, instance):
+        goods = instance.goods
+        goods.goods_num += instance.nums
+        goods.save()
+        instance.delete()
+
+    # 重载 UpdateModelMixin 的 perform_update 方法，实现修改购物车商品数量，商品库存数的修改
+    # 更新商品库存
+    def perform_update(self, serializer):
+        existed_record = ShoppingCart.objects.get(id = serializer.instance.id)
+        existed_nums = existed_record.nums
+        # 保存之前的数据existed_nums
+        saved_record = serializer.save()
+
+        # 变化的数量
+        nums = saved_record.nums - existed_nums
+        goods = saved_record.goods
+        goods.goods_num -= nums
+        goods.save()
+
+
 class OrderViewset(mixins.ListModelMixin,
                     mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -159,6 +190,15 @@ class AliPayView(APIView):
 
             existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
             for existed_order in existed_orders:
+                # 支付成功的订单在商品中增加销量值
+                # 订单商品项
+                order_goods = existed_order.goods.all()
+                # 商品销量增加订单中数值
+                for order_good in order_goods:
+                    goods = order_good.goods
+                    goods.sold_num += order_goods.goods_num
+                    goods.save()
+
                 existed_order.pay_status = trade_status
                 existed_order.trade_no = trade_no
                 existed_order.pay_time = datetime.now()

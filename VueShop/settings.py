@@ -162,7 +162,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    )
+    ),
+    'DEFAULT_THROTTLE_CLASSES': (
+            'rest_framework.throttling.AnonRateThrottle',
+            'rest_framework.throttling.UserRateThrottle'
+        ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '2/min',
+        'user': '3/min'
+    }
 }
 
 JWT_AUTH = {
@@ -179,3 +187,14 @@ APIKEY = "d6c4ddbf50ab36611d2f52041a0b949e"
 # 支付宝相关配置
 private_key_path = os.path.join(BASE_DIR,'apps/trade/keys/private_key_2048.txt')
 ali_pub_key_path = os.path.join(BASE_DIR,'apps/trade/keys/alipay_public_key.txt')
+
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/8",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }

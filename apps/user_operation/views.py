@@ -34,6 +34,22 @@ class UserFavViewset(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retr
     def get_queryset(self):
         return UserFav.objects.filter(user=self.request.user)
 
+    # 重载 CreateModelMixin 的 perform_create 方法，实现用户收藏后，商品收藏数增加逻辑
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        # 通过这个instance Userfav找到goods
+        goods = instance.goods
+        goods.fav_num +=1
+        goods.save()
+
+    # 重载 DestroyModelMixin 的 perform_destroy 方法，实现用户取消收藏后，商品收藏数减1逻辑
+    def perform_destroy(self, instance):
+        goods = instance.goods
+        goods.fav_num -= 1
+        goods.save()
+        # delete后就取不到goods了
+        instance.delete()
+
 
 class LeavingMessageViewset(mixins.ListModelMixin,mixins.CreateModelMixin,mixins.DestroyModelMixin,viewsets.GenericViewSet):
     """
